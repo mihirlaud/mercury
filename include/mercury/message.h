@@ -1,132 +1,88 @@
 #pragma once
 
+#include <map>
 #include <string>
 #include <unordered_map>
+#include <variant>
 #include <vector>
 
 namespace mercury {
 
-class Value {
+struct Null;
+struct Bool;
+struct Number;
+struct String;
+struct Array;
+struct Object;
+using Message = std::variant<Null, Bool, Number, String, Array, Object>;
 
-public:
-	Value() {
-	}
+struct Null {};
 
-	std::string to_string() {
-		return "";
-	}
-};
-
-class Bool : public Value {
-
-private:
+struct Bool {
 	bool b;
-
-public:
-	Bool() : b(false) {
-	}
-
-	Bool(bool b) : b(b) {
-	}
-
-	std::string to_string() {
-		return std::to_string(this->b);
-	}
 };
 
-class Number : public Value {
-
-private:
-	double d;
-
-public:
-	Number() : d(0.0) {
-	}
-
-	Number(double d) : d(d) {
-	}
-
-	std::string to_string() {
-		return std::to_string(this->d);
-	}
+struct Number {
+	double num;
 };
 
-class String : public Value {
-
-private:
+struct String {
 	std::string s;
+};
 
-public:
-	String() : s("") {
+struct Array {
+	std::vector<Message> arr;
+};
+
+struct Object {
+	std::map<std::string, Message> mp;
+};
+
+struct Serialize {
+	std::string operator()(Null&) {
+		return "null";
 	}
 
-	String(std::string s) : s(s) {
+	std::string operator()(Bool& val) {
+		return std::to_string(val.b);
 	}
 
-	std::string to_string() {
-		return this->s;
+	std::string operator()(Number& val) {
+		return std::to_string(val.num);
+	}
+
+	std::string operator()(String& val) {
+		return val.s;
+	}
+
+	std::string operator()(Array& val) {
+		std::string ret = "[";
+
+		for (auto element : val.arr) {
+			ret += std::visit(Serialize(), element) + ", ";
+		}
+
+		ret = ret.substr(0, ret.size() - 2);
+		ret += "]";
+
+		return ret;
+	}
+
+	std::string operator()(Object& val) {
+		std::string ret = "{";
+
+		for (auto& key_val : val.mp) {
+			std::string val_ser = std::visit(Serialize(), key_val.second);
+			ret += "\"" + key_val.first + "\"" + ": " + +", ";
+		}
+
+		ret = ret.substr(0, ret.size() - 2);
+		ret += "}";
+
+		return ret;
 	}
 };
 
-class Array : public Value {
-private:
-	std::vector<Value> arr;
-
-public:
-	Array() {
-		this->arr = {};
-	}
-
-	Array(std::vector<bool> vec) {
-		this->arr = {};
-		for (bool b : vec) {
-			arr.push_back(Bool(b));
-		}
-	}
-
-	Array(std::vector<double> vec) {
-		this->arr = {};
-		for (double d : vec) {
-			arr.push_back(Number(d));
-		}
-	}
-
-	Array(std::vector<std::string> vec) {
-		this->arr = {};
-		for (std::string s : vec) {
-			arr.push_back(String(s));
-		}
-	}
-
-	Array(std::vector<Value> vec) {
-		this->arr = vec;
-	}
-
-	std::string to_string() {
-		std::string s = "[";
-		for (Value& v : this->arr) {
-			s += v.to_string() + ",";
-		}
-		s += "]";
-		return s;
-	}
-};
-
-class Object : public Value {
-
-private:
-	std::unordered_map<std::string, Value> m;
-
-public:
-};
-
-class Message {
-
-public:
-	Message() {
-	}
-
-	virtual std::string to_string() = 0;
-};
+std::string serialize(Message msg);
 
 } // namespace mercury

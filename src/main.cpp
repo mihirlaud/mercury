@@ -58,19 +58,6 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 
-class MyMessage : public mercury::Message {
-
-	std::uint32_t t;
-
-public:
-	MyMessage(std::uint32_t t) : t(t) {
-	}
-
-	std::string to_string() {
-		return std::to_string(t);
-	}
-};
-
 void opcontrol() {
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
 
@@ -79,12 +66,13 @@ void opcontrol() {
 	mercury::Publisher pub("opcontrol");
 
 	mercury::Subscriber sub("opcontrol", [=](mercury::Message& msg) {
-		printf("%s %s\n", msg_beginning_1, msg.to_string().c_str());
+		printf("%s %s\n", msg_beginning_1, mercury::serialize(msg).c_str());
 	});
 
 	while (true) {
+		double t = pros::millis();
 
-		MyMessage msg(pros::millis());
+		mercury::Message msg(mercury::Number{t});
 
 		pub.publish(msg);
 
