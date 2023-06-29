@@ -13,17 +13,17 @@ namespace mercury {
 class Server {
 
 private:
+	std::unordered_map<std::string, mercury::Topic> topics;
+
 	Server() {
 		this->topics = {};
-	} // Constructor? (the {} brackets) are needed here.
+	}
 
 	static Server& getInstance() {
 		static Server instance; // Guaranteed to be destroyed.
 		                        // Instantiated on first use.
 		return instance;
 	}
-
-	std::unordered_map<std::string, mercury::Topic> topics;
 
 	friend mercury::Publisher;
 	friend mercury::Subscriber;

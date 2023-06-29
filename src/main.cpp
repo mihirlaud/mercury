@@ -79,7 +79,7 @@ void opcontrol() {
 	mercury::Publisher pub("opcontrol");
 
 	mercury::Subscriber sub("opcontrol", [=](mercury::Message& msg) {
-		printf("%s %s", msg_beginning_1, msg.to_string().c_str());
+		printf("%s %s\n", msg_beginning_1, msg.to_string().c_str());
 	});
 
 	while (true) {

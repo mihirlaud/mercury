@@ -6,8 +6,6 @@ void Server::create_topic(std::string name) {
 	if (this->topics.find(name) == this->topics.end()) {
 		mercury::Topic new_topic;
 		this->topics[name] = new_topic;
-	} else {
-		// throw error
 	}
 }
 
