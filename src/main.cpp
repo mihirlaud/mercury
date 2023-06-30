@@ -58,28 +58,24 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 
-class MyMessage : public mercury::Message {
-public:
-	std::string to_string() {
-		return "";
+const char* msg_beginning_1 = "Message published at:";
+
+struct MyVisitor : mercury::visitor {
+	void operator()(mercury::Number& num) {
+		printf("%s %lf", msg_beginning_1, num.num);
 	}
 };
 
 void opcontrol() {
+
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
 
-	const char* msg_beginning_1 = "Message published at:";
-
 	mercury::Publisher pub("opcontrol");
-
-	mercury::Subscriber sub("opcontrol", [=](mercury::Message& msg) {
-		printf("%s %s\n", msg_beginning_1, msg.to_string().c_str());
-	});
+	mercury::Subscriber sub("opcontrol", MyVisitor());
 
 	while (true) {
-		double t = pros::millis();
 
-		MyMessage msg;
+		mercury::Message msg(mercury::Number{(double)pros::millis()});
 
 		pub.publish(msg);
 

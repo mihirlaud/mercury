@@ -13,7 +13,7 @@ class Publisher {
 public:
 	Publisher(std::string name);
 
-	void publish(mercury::Message& msg);
+	void publish(mercury::Message msg);
 };
 
 } // namespace mercury

@@ -17,7 +17,7 @@ void Server::subscribe_to_topic(std::string name, Subscriber* sub) {
 	this->topics_mutex.give();
 }
 
-void Server::push_to_topic(std::string name, mercury::Message& msg) {
+void Server::push_to_topic(std::string name, mercury::Message msg) {
 	this->queue_mutex.take();
 	this->msg_queue.push({name, msg});
 	this->queue_mutex.give();

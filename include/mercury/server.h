@@ -52,7 +52,7 @@ private:
 	friend mercury::Subscriber;
 
 	void create_topic(std::string name);
-	void push_to_topic(std::string name, mercury::Message& msg);
+	void push_to_topic(std::string name, mercury::Message msg);
 	void subscribe_to_topic(std::string name, Subscriber* sub);
 };
 

@@ -9,11 +9,11 @@ namespace mercury {
 class Subscriber {
 
 private:
-	std::function<void(mercury::Message&)> fn;
+	mercury::visitor fn;
 
 public:
-	Subscriber(std::string topic_name, std::function<void(mercury::Message&)> fn);
+	Subscriber(std::string topic_name, mercury::visitor fn);
 
-	void receiveMessage(mercury::Message& msg);
+	void receiveMessage(mercury::Message msg);
 };
 } // namespace mercury
