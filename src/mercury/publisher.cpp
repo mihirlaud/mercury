@@ -8,7 +8,7 @@ Publisher::Publisher(std::string name) : name(name) {
 	server.create_topic(name);
 }
 
-void Publisher::publish(mercury::Message msg) {
+void Publisher::publish(mercury::Message& msg) {
 	auto& server = mercury::Server::getInstance();
 	server.push_to_topic(this->name, msg);
 }
