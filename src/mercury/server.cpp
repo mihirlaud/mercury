@@ -13,8 +13,8 @@ void Server::subscribe_to_topic(std::string name, Subscriber* sub) {
 	this->topics[name].add_subscriber(sub);
 }
 
-void Server::push_to_topic(std::string name, mercury::Message& msg) {
-	this->topics[name].notify_subscribers(msg);
+void Server::push_to_topic(std::string name, mercury::Message msg) {
+	this->msg_queue.push({name, msg});
 }
 
 } // namespace mercury
