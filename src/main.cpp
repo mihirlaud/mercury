@@ -61,8 +61,8 @@ void autonomous() {
 const char* msg_beginning_1 = "Message published at:";
 
 struct MyVisitor : mercury::visitor {
-	void operator()(mercury::Number& num) {
-		printf("%s %lf", msg_beginning_1, num.num);
+	void operator()(mercury::Integer& data) {
+		printf("%s %d", msg_beginning_1, data.data);
 	}
 };
 
@@ -75,7 +75,7 @@ void opcontrol() {
 
 	while (true) {
 
-		mercury::Message msg(mercury::Number{(double)pros::millis()});
+		mercury::Message msg(mercury::Integer{(int)pros::millis()});
 
 		pub.publish(msg);
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "mercury/message.h"
+#include "mercury/msgs/message.h"
 #include "mercury/publisher.h"
 #include "mercury/subscriber.h"
 #include "mercury/topic.h"

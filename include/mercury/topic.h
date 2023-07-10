@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "mercury/message.h"
+#include "mercury/msgs/message.h"
 #include "mercury/subscriber.h"
 
 namespace mercury {
