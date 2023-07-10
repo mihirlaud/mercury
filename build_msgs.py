@@ -1,5 +1,7 @@
 import os
 
+print("Beginning message build script...")
+
 target = "include/mercury/msgs/"
 specs = target + "specs/"
 dir = os.fsencode(specs)
@@ -34,7 +36,7 @@ for file in os.listdir(dir):
         new_header.write("using std::string;\n")
         new_header.write("using std::vector;\n\n")
 
-        new_header.write("struct " + msg_name + "{\n")
+        new_header.write("struct " + msg_name + " {\n")
         for name in struct_fields:
             new_header.write("\t" + struct_fields[name] + " " + name + ";\n")
         new_header.write("};\n\n")
@@ -67,3 +69,5 @@ msg_header.write("};\n\n")
 
 # Close namespace
 msg_header.write("}\n")
+
+print("Message code generated!")

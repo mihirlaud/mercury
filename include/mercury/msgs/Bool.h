@@ -8,7 +8,7 @@ namespace mercury {
 using std::string;
 using std::vector;
 
-struct Bool{
+struct Bool {
 	bool data;
 };
 

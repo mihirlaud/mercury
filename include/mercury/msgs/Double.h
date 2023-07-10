@@ -8,7 +8,7 @@ namespace mercury {
 using std::string;
 using std::vector;
 
-struct Double{
+struct Double {
 	double data;
 };
 

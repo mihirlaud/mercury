@@ -8,8 +8,9 @@ namespace mercury {
 using std::string;
 using std::vector;
 
-struct Integer {
-	int data;
+struct Point {
+	double x;
+	double y;
 };
 
 }
