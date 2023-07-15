@@ -13,11 +13,16 @@ namespace mercury {
 using Message = std::variant<Bool, Double, Integer, Point, String>;
 
 struct visitor {
-	void operator()(Bool&) {}
-	void operator()(Double&) {}
-	void operator()(Integer&) {}
-	void operator()(Point&) {}
-	void operator()(String&) {}
+	void operator()(Bool&) {
+	}
+	void operator()(Double&) {
+	}
+	void operator()(Integer&) {
+	}
+	void operator()(Point&) {
+	}
+	void operator()(String&) {
+	}
 };
 
-}
+} // namespace mercury

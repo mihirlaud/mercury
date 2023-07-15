@@ -9,10 +9,10 @@ namespace mercury {
 class Subscriber {
 
 private:
-	mercury::visitor fn;
+	mercury::visitor* fn;
 
 public:
-	Subscriber(std::string topic_name, mercury::visitor fn);
+	Subscriber(std::string topic_name, mercury::visitor* fn);
 
 	void receiveMessage(mercury::Message msg);
 };

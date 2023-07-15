@@ -71,7 +71,9 @@ void opcontrol() {
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
 
 	mercury::Publisher pub("opcontrol");
-	mercury::Subscriber sub("opcontrol", MyVisitor());
+
+	MyVisitor callback;
+	mercury::Subscriber sub("opcontrol", &callback);
 
 	while (true) {
 
