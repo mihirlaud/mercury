@@ -1,5 +1,5 @@
 #include "main.h"
-#include <string>
+#include "mercury/msgs/Bool.h"
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -58,26 +58,15 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 
-const char* msg_beginning_1 = "Message published at:";
-
-struct MyVisitor : mercury::visitor {
-	void operator()(mercury::Integer& data) {
-		printf("%s %d", msg_beginning_1, data.data);
-	}
-};
-
 void opcontrol() {
 
-	pros::Controller master(pros::E_CONTROLLER_MASTER);
-
-	mercury::Publisher pub("opcontrol");
-	mercury::Subscriber sub("opcontrol", MyVisitor());
+	mercury::Publisher<mercury::Bool> pub("opcontrol");
+	mercury::Subscriber<mercury::Bool> sub(
+	    "opcontrol", [](mercury::Bool b) { printf("%d", b.data); });
 
 	while (true) {
 
-		mercury::Message msg(mercury::Integer{(int)pros::millis()});
-
-		pub.publish(msg);
+		pub.publish(mercury::Bool{true});
 
 		pros::delay(10);
 	}
