@@ -58,15 +58,18 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 
+void opcontrol_callback(int data) {
+	printf("%d", data);
+}
+
 void opcontrol() {
 
-	mercury::Publisher<mercury::Bool> pub("opcontrol");
-	mercury::Subscriber<mercury::Bool> sub(
-	    "opcontrol", [](mercury::Bool b) { printf("%d", b.data); });
+	mercury::Publisher<int> pub("opcontrol");
+	mercury::Subscriber<int> sub("opcontrol", opcontrol_callback);
 
 	while (true) {
 
-		pub.publish(mercury::Bool{true});
+		pub.publish(420);
 
 		pros::delay(10);
 	}

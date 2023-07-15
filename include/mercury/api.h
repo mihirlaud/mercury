@@ -1,9 +1,7 @@
 #pragma once
 
-#include "mercury/msgs/message.h"
-
+#include <any>
 #include <functional>
-#include <queue>
 #include <string>
 #include <unordered_map>
 
@@ -35,7 +33,7 @@ public:
 class Server {
 
 private:
-	std::unordered_map<std::string, mercury::Topic<Message>> topics;
+	std::unordered_map<std::string, std::any> topics;
 
 	Server() {
 		this->topics = {};
@@ -49,10 +47,6 @@ private:
 
 	template <class MessageT> friend class mercury::Publisher;
 	template <class MessageT> friend class mercury::Subscriber;
-
-	// void create_topic(std::string name);
-	// void push_to_topic(std::string name, mercury::Message msg);
-	// void subscribe_to_topic(std::string name, Subscriber<class MessageT>* sub);
 };
 
 template <class MessageT> class Publisher {
@@ -63,14 +57,15 @@ public:
 	Publisher(std::string name) : name(name) {
 		auto& server = mercury::Server::getInstance();
 		if (server.topics.find(name) == server.topics.end()) {
-			mercury::Topic<mercury::Message> new_topic;
+			mercury::Topic<MessageT> new_topic;
 			server.topics[name] = new_topic;
 		}
 	}
 
 	void publish(MessageT msg) {
 		auto& server = mercury::Server::getInstance();
-		server.topics[name].notify_subscribers(msg);
+		auto topic = std::any_cast<Topic<MessageT>>(server.topics[name]);
+		topic.notify_subscribers(msg);
 	}
 };
 
@@ -82,7 +77,8 @@ private:
 public:
 	Subscriber(std::string name, std::function<void(MessageT)> fn) : fn(fn) {
 		auto& server = mercury::Server::getInstance();
-		server.topics[name].add_subscriber(this);
+		auto topic = std::any_cast<Topic<MessageT>>(server.topics[name]);
+		topic.add_subscriber(this);
 	}
 
 	void receiveMessage(MessageT msg) {
