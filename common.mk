@@ -173,15 +173,13 @@ endif
 
 quick: $(DEFAULT_BIN)
 
-all: clean msgs $(DEFAULT_BIN)
+all: clean $(DEFAULT_BIN)
 
 clean:
 	@echo Cleaning project
 	-$Drm -rf $(BINDIR)
 	-$Drm -rf $(DEPDIR)
 
-msgs:
-	py build_msgs.py
 
 ifeq ($(IS_LIBRARY),1)
 ifeq ($(LIBNAME),libbest)
