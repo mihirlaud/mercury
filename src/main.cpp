@@ -1,5 +1,4 @@
 #include "main.h"
-#include "mercury/msgs/Bool.h"
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -59,7 +58,7 @@ void autonomous() {
  */
 
 void opcontrol_callback(std::string data) {
-	printf("%d : %s", pros::millis(), data.c_str());
+	printf("%s\n", data.c_str());
 }
 
 void opcontrol() {
@@ -69,7 +68,7 @@ void opcontrol() {
 
 	while (true) {
 
-		pub.publish("Mercury is running!\n");
+		pub.publish("Mercury is running!");
 
 		pros::delay(10);
 	}
