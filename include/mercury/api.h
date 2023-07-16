@@ -7,8 +7,8 @@
 
 namespace mercury {
 
-template <class MessageT> class Publisher;
-template <class MessageT> class Subscriber;
+template <class> class Publisher;
+template <class> class Subscriber;
 
 template <class MessageT> class Topic {
 private:
@@ -45,8 +45,8 @@ private:
 		return instance;
 	}
 
-	template <class MessageT> friend class mercury::Publisher;
-	template <class MessageT> friend class mercury::Subscriber;
+	template <class> friend class mercury::Publisher;
+	template <class> friend class mercury::Subscriber;
 };
 
 template <class MessageT> class Publisher {
@@ -79,10 +79,10 @@ public:
 		auto& server = mercury::Server::getInstance();
 		auto topic = std::any_cast<Topic<MessageT>>(server.topics[name]);
 		topic.add_subscriber(this);
+		server.topics[name] = topic;
 	}
 
 	void receiveMessage(MessageT msg) {
-		printf("msg received\n");
 		fn(msg);
 	}
 };
