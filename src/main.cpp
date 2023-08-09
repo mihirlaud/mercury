@@ -1,4 +1,5 @@
 #include "main.h"
+#include "mercury/api.h"
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -57,11 +58,27 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 
+void thread_callback(std::string data) {
+	printf("Thread 2 %s\n", data.c_str());
+}
+
+void start_thread() {
+	mercury::Publisher<std::string> thread_pub("opcontrol");
+	mercury::Subscriber<std::string> thread_sub("opcontrol", thread_callback);
+
+	while (true) {
+		thread_pub.publish("Thread is running!");
+
+		pros::delay(10);
+	}
+}
+
 void opcontrol_callback(std::string data) {
 	printf("%s\n", data.c_str());
 }
 
 void opcontrol() {
+	pros::Task new_thread(start_thread);
 
 	mercury::Publisher<std::string> pub("opcontrol");
 	mercury::Subscriber<std::string> sub("opcontrol", opcontrol_callback);
