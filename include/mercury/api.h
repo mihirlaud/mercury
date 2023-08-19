@@ -71,10 +71,10 @@ private:
 	// Unordered map lists Topics by name
 	std::unordered_map<std::string, std::any> topics;
 
-	// Unordered map lists a Mutex for each topic name. This allows only one
-	// Publisher to publish to a topic at once, but for two Topics to be accessed
-	// simultaneously
-	std::unordered_map<std::string, std::unique_lock<pros::Mutex>> mutices;
+	// Unordered map lists a mutex lock in the form of a bool for each topic name.
+	// This allows only one Publisher to publish to a topic at once, but for two
+	// Topics to be accessed simultaneously
+	std::unordered_map<std::string, bool> mutices;
 
 	// Server constructor
 	Server() {
@@ -98,14 +98,13 @@ private:
 
 	// create_topic
 	// Checks if topics already has an instance of a Topic with the given name. If
-	// not, creates a new Topic object and Mutex object and adds them to their
+	// not, creates a new Topic object and mutex lock and adds them to their
 	// respective maps
 	template <class MessageT> void create_topic(std::string name) {
 		if (this->topics.find(name) == this->topics.end()) {
 			mercury::Topic<MessageT> new_topic;
 			this->topics[name] = new_topic;
-			pros::Mutex m;
-			this->mutices[name] = std::unique_lock<pros::Mutex>{m, std::defer_lock};
+			this->mutices[name] = false;
 		}
 	}
 
@@ -114,23 +113,27 @@ private:
 	// unlocks topic mutex
 	template <class MessageT>
 	void publish_to_topic(std::string name, MessageT msg) {
-		this->mutices[name].lock();
+		while (this->mutices[name])
+			;
+		this->mutices[name] = true;
 		auto topic = std::any_cast<Topic<MessageT>>(this->topics[name]);
 		topic.notify_subscribers(msg);
-		this->mutices[name].unlock();
+		this->mutices[name] = false;
 	}
 
 	// add_subscriber
 	// Locks topic mutex, registers subscriber with topic, and unlocks topic mutex
 	template <class MessageT>
 	void add_subscriber(std::string name, Subscriber<MessageT>* sub) {
-		this->mutices[name].lock();
+		while (this->mutices[name])
+			;
+		this->mutices[name] = true;
 		if (this->topics.find(name) != this->topics.end()) {
 			auto topic = std::any_cast<Topic<MessageT>>(this->topics[name]);
 			topic.add_subscriber(sub);
 			this->topics[name] = topic;
 		}
-		this->mutices[name].unlock();
+		this->mutices[name] = false;
 	}
 };
 
