@@ -58,21 +58,6 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 
-void sub2_callback(std::string data) {
-	printf("%s 2\n", data.c_str());
-}
-
-void second_sub() {
-	mercury::Publisher<std::string> pub2("opcontrol");
-	mercury::Subscriber<std::string> sub2("opcontrol", sub2_callback);
-
-	while (true) {
-		pub2.publish("Mercury is also running here!");
-
-		pros::delay(10);
-	}
-}
-
 // This function will be called every time the subscriber receives a message. It
 // prints the data received to the PROS terminal
 void opcontrol_callback(std::string data) {
@@ -80,8 +65,6 @@ void opcontrol_callback(std::string data) {
 }
 
 void opcontrol() {
-
-	pros::Task sub2_task(second_sub);
 
 	// Create Publisher with message type string and name "opcontrol"
 	mercury::Publisher<std::string> pub("opcontrol");
@@ -91,7 +74,6 @@ void opcontrol() {
 	mercury::Subscriber<std::string> sub("opcontrol", opcontrol_callback);
 
 	while (true) {
-		printf("opcontrol\n");
 
 		// Publish a string to "opcontrol" topic
 		pub.publish("Mercury is running!");
